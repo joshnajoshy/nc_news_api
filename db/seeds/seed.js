@@ -76,15 +76,23 @@ const seed = ({ topicData, userData, articleData, commentData }) => {
   .then(({rows}) => {
     const articleIdData = {}
     const artcileData = rows
+    console.log(artcileData, '<< article data with id')
     artcileData.forEach((data) => {
-      articleIdData[data.article_id] = data.article_id
+      articleIdData[data.title] = data.article_id
     })
+    console.log(commentData, '<< commentData')
+    console.log(articleIdData, '<< articleIdData')
     const formattedComments = commentData.map((commentCatagories) => {
       const timeStampComments = convertTimestampToDate(commentCatagories.created_at)
+      console.log(commentCatagories, 'comment Categories in map')
       for(const key in articleIdData){
-        return [articleIdData[key], commentCatagories.body, commentCatagories.votes, commentCatagories.author, timeStampComments.created_at]
+        if(commentCatagories.article_title === key){
+          console.log(articleIdData[key], 'articleIdData[key] in for loop') 
+          return [articleIdData[key], commentCatagories.body, commentCatagories.votes, commentCatagories.author, timeStampComments.created_at]
+        }
       }
     })
+    console.log(formattedComments, 'formatted comments')
     const insertCommentsQuery = format(`INSERT INTO comments (article_id, body, votes, author, created_at) VALUES %L RETURNING *`, formattedComments);
     return db.query(insertCommentsQuery)
   })
