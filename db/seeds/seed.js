@@ -67,7 +67,9 @@ const seed = ({ topicData, userData, articleData, commentData }) => {
   .then(() => {
     
     const formattedArticles = articleData.map((articleCatagories) => {
-      const timeStampArticles = convertTimestampToDate(articleCatagories.created_at)
+      const timestampObject = {}
+      timestampObject.created_at = articleCatagories.created_at
+      const timeStampArticles = convertTimestampToDate(timestampObject)
       return [articleCatagories.title, articleCatagories.topic, articleCatagories.author, articleCatagories.body, timeStampArticles.created_at, articleCatagories.votes, articleCatagories.article_img_url]
     })
     const insertArticlesQuery = format(`INSERT INTO articles (title, topic, author, body, created_at, votes, article_img_url) VALUES %L RETURNING *`, formattedArticles);
@@ -76,23 +78,19 @@ const seed = ({ topicData, userData, articleData, commentData }) => {
   .then(({rows}) => {
     const articleIdData = {}
     const artcileData = rows
-    console.log(artcileData, '<< article data with id')
     artcileData.forEach((data) => {
       articleIdData[data.title] = data.article_id
     })
-    console.log(commentData, '<< commentData')
-    console.log(articleIdData, '<< articleIdData')
     const formattedComments = commentData.map((commentCatagories) => {
-      const timeStampComments = convertTimestampToDate(commentCatagories.created_at)
-      console.log(commentCatagories, 'comment Categories in map')
+      const timeStampObjectComments = {}
+      timeStampObjectComments.created_at = commentCatagories.created_at
+      const timeStampComments = convertTimestampToDate(timeStampObjectComments )
       for(const key in articleIdData){
         if(commentCatagories.article_title === key){
-          console.log(articleIdData[key], 'articleIdData[key] in for loop') 
           return [articleIdData[key], commentCatagories.body, commentCatagories.votes, commentCatagories.author, timeStampComments.created_at]
         }
       }
     })
-    console.log(formattedComments, 'formatted comments')
     const insertCommentsQuery = format(`INSERT INTO comments (article_id, body, votes, author, created_at) VALUES %L RETURNING *`, formattedComments);
     return db.query(insertCommentsQuery)
   })
