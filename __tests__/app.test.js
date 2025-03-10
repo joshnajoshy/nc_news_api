@@ -61,4 +61,12 @@ describe('/api/articles/:article_id', () => {
       expect(typeof article.article_img_url).toBe('string')
       })
     })
+    test('400: responds with bad request if article_id is not a number', () => {
+      return request(app)
+      .get('/api/articles/bannana')
+      .expect(400)
+      .then(({body}) => {
+        expect(body.msg).toBe('bad request');
+      })
+    })
     })
