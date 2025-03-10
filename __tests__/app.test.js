@@ -42,3 +42,23 @@ describe('GET: /api/topics', () => {
     })
     })
 })
+
+describe('/api/articles/:article_id', () => {
+  test('200: Responds with an article object with properties author, title, article_id, body, topic, created_at, votes, article_img_url', () => {
+    return request(app)
+    .get('/api/articles/2')
+    .expect(200)
+    .then(({body}) => {
+      const article = body.article;
+      expect(article.article_id).toBe(2)
+      expect(typeof article.article_id).toBe('number')
+      expect(typeof article.title).toBe('string')
+      expect(typeof article.topic).toBe('string')
+      expect(typeof article.author).toBe('string')
+      expect(typeof article.body).toBe('string')
+      expect(typeof article.created_at).toBe('string')
+      expect(typeof article.votes).toBe('number')
+      expect(typeof article.article_img_url).toBe('string')
+      })
+    })
+    })
