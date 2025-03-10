@@ -69,4 +69,12 @@ describe('/api/articles/:article_id', () => {
         expect(body.msg).toBe('bad request');
       })
     })
+    test('404: responds with article not found if article_id is a number but article not found', () => {
+      return request(app)
+      .get('/api/articles/7777')
+      .expect(404)
+      .then(({body}) => {
+        expect(body.msg).toBe('article not found');
+      })
+    })
     })
