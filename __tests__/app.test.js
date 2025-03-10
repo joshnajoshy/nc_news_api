@@ -23,3 +23,22 @@ describe("GET /api", () => {
       });
   });
 });
+
+describe('GET: /api/topics', () => {
+  test('200: Responds with an array of topic objects with keys slug and description', () => {
+    return request(app)
+    .get('/api/topics')
+    .expect(200)
+    .then(({body}) => {
+      const {topics} = body;
+      expect(topics.length).toBeGreaterThan(0)
+      topics.forEach((topic) => {
+        expect(topic).toMatchObject({
+          slug: expect.any(String),
+          description: expect.any(String),
+          img_url: expect.any(String)
+        })
+      })
+    })
+    })
+})
