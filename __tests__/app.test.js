@@ -43,7 +43,7 @@ describe('GET: /api/topics', () => {
     })
 })
 
-describe('/api/articles/:article_id', () => {
+describe('GET: /api/articles/:article_id', () => {
   test('200: Responds with an article object with properties author, title, article_id, body, topic, created_at, votes, article_img_url', () => {
     return request(app)
     .get('/api/articles/2')
