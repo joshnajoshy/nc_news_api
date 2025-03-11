@@ -27,4 +27,13 @@ const fetchAllArticles = () => {
     })
 }
 
-module.exports = {fetchAllTopics, fetchArticleById, fetchAllArticles};
+const fetchAllCommentsByArticleId = (article_id) => {
+return db.query(`SELECT * FROM comments WHERE article_id = $1 ORDER BY created_at DESC`, [article_id]).then(({rows}) => {
+    if(rows.length === 0){
+        return Promise.reject({status: 404, msg: 'comments not found'})
+    }
+    return rows
+})
+}
+
+module.exports = {fetchAllTopics, fetchArticleById, fetchAllArticles, fetchAllCommentsByArticleId};

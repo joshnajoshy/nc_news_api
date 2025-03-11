@@ -1,5 +1,5 @@
 const endpoints = require('../endpoints.json');
-const {fetchAllTopics, fetchArticleById, fetchAllArticles} = require('../models/api.models')
+const {fetchAllTopics, fetchArticleById, fetchAllArticles, fetchAllCommentsByArticleId} = require('../models/api.models')
 
 const getAllEndpoints = (request, response) => {
     response.status(200).send({endpoints})
@@ -20,10 +20,19 @@ fetchArticleById(article_id).then((article) => {
 })
 }
 
-const getAllArticles = (request, response, next) => {
+const getAllArticles = (request, response) => {
     fetchAllArticles().then((articles) => {
         response.status(200).send({articles})
     })
 }
 
-module.exports = {getAllEndpoints, getAllTopics, getArticlesById, getAllArticles};
+const getAllCommentsByArticleId = (request, response, next) => {
+    const {article_id} = request.params
+    fetchAllCommentsByArticleId(article_id).then((comments) => {
+        response.status(200).send({comments})
+    }).catch((error) => {
+        next(error)
+    })
+}
+
+module.exports = {getAllEndpoints, getAllTopics, getArticlesById, getAllArticles, getAllCommentsByArticleId};
