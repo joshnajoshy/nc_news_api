@@ -20,7 +20,7 @@ fetchArticleById(article_id).then((article) => {
 })
 }
 
-const getAllArticles = (request, response, next) => {
+const getAllArticles = (request, response) => {
     fetchAllArticles().then((articles) => {
         response.status(200).send({articles})
     })
@@ -30,6 +30,8 @@ const getAllCommentsByArticleId = (request, response, next) => {
     const {article_id} = request.params
     fetchAllCommentsByArticleId(article_id).then((comments) => {
         response.status(200).send({comments})
+    }).catch((error) => {
+        next(error)
     })
 }
 

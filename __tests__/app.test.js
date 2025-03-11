@@ -145,8 +145,22 @@ describe('GET: /api/articles/:article_id', () => {
           })
           expect(comment.article_id).toBe(5)
         })
-
       })
-
+      })
+      test('400: responds with bad request if article_id is not a number', () => {
+        return request(app)
+        .get('/api/articles/bannana/comments')
+        .expect(400)
+        .then(({body}) => {
+          expect(body.msg).toBe('bad request');
+        })
+    })
+    test('404: responds with comments not found if article_id is a number but article not found', () => {
+      return request(app)
+      .get('/api/articles/1000/comments')
+      .expect(404)
+      .then(({body}) => {
+        expect(body.msg).toBe('comments not found');
       })
     })
+  })
