@@ -28,7 +28,7 @@
   },
   "GET /api/articles/:article_id": {
     "description": "serves an object of the article specified",
-    "queries": [2],
+    "queries": [],
     "exampleResponse": {
       "article": {
         "article_id": 2,
