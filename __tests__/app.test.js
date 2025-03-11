@@ -78,3 +78,44 @@ describe('GET: /api/articles/:article_id', () => {
       })
     })
     })
+
+    describe('GET:  /api/articles', () => {
+      test('200: responds with an array of all articles with expected properties and article sorted by date', () => {
+        return request(app)
+        .get('/api/articles')
+        .expect(200)
+        .then(({body}) => {
+          const {articles} = body;
+          expect(articles.length).toBeGreaterThan(0)
+          const results = []
+          articles.filter((article) => {
+            results.push(article.created_at)
+          })
+          const expectedResult = [...results].sort((a,b) => b - a)
+          expect(results[0]).toEqual(expectedResult[0])
+          articles.forEach((article) => {
+          expect(article).toMatchObject({
+            article_id: expect.any(Number),
+            title: expect.any(String),
+            topic: expect.any(String),
+            author: expect.any(String),
+            created_at: expect.any(String),
+            votes: expect.any(Number),
+            article_img_url: expect.any(String),
+            comment_count: expect.any(Number)
+        })
+        expect(article).not.toMatchObject({
+          article_id: expect.any(Number),
+          title: expect.any(String),
+          topic: expect.any(String),
+          author: expect.any(String),
+          body: expect.any(String),
+          created_at: expect.any(String),
+          votes: expect.any(Number),
+          article_img_url: expect.any(String),
+          comment_count: expect.any(Number)
+      })
+      })
+        })
+      })
+    })
