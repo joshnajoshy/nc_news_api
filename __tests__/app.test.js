@@ -127,6 +127,7 @@ describe('GET: /api/articles/:article_id', () => {
       .expect(200)
       .then(({body}) => {
         const {comments} = body
+        console.log(comments)
         expect(comments.length).toBe(2) 
         const result = []
         comments.filter((comment) => {
