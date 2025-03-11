@@ -27,4 +27,10 @@ const fetchAllArticles = () => {
     })
 }
 
-module.exports = {fetchAllTopics, fetchArticleById, fetchAllArticles};
+const fetchAllCommentsByArticleId = (article_id) => {
+return db.query(`SELECT * FROM comments WHERE article_id = $1 ORDER BY created_at DESC`, [article_id]).then(({rows}) => {
+    return rows
+})
+}
+
+module.exports = {fetchAllTopics, fetchArticleById, fetchAllArticles, fetchAllCommentsByArticleId};

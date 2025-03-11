@@ -119,3 +119,34 @@ describe('GET: /api/articles/:article_id', () => {
         })
       })
     })
+
+    describe('GET: /api/articles/:article_id/comments', () => {
+      test('200: responds with an array of comments for the specific article', () => {
+      return request(app)
+      .get('/api/articles/5/comments')
+      .expect(200)
+      .then(({body}) => {
+        const {comments} = body
+        expect(comments.length).toBe(2) 
+        const result = []
+        comments.filter((comment) => {
+          result.push(comment.created_at)
+        })
+        const expectedResult = [...result].sort((a,b) => b - a)
+        expect(result[0]).toEqual(expectedResult[0])
+        comments.forEach((comment) => {
+          expect(comment).toMatchObject({
+            comment_id: expect.any(Number),
+            article_id: expect.any(Number),
+            body: expect.any(String),
+            votes: expect.any(Number),
+            author: expect.any(String),
+            created_at: expect.any(String)
+          })
+          expect(comment.article_id).toBe(5)
+        })
+
+      })
+
+      })
+    })
