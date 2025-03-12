@@ -214,4 +214,14 @@ describe('GET: /api/articles/:article_id', () => {
         expect(body.updatedArticle.votes).toBe(0)
       })
   })
+  test('400: when inc_votes is not a number', () => {
+    const articleUpdate = {inc_votes: 'update'}
+    return request(app)
+      .patch('/api/articles/2')
+      .send(articleUpdate)
+      .expect(400)
+      .then(({body}) => {
+        expect(body.msg).toBe('bad request')
+      })
+  })
 })

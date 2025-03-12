@@ -54,12 +54,14 @@ Promise.all(promises).then(([data]) => {
 })
 }
 
-const patchArticleById = (request, response) => {
+const patchArticleById = (request, response, next) => {
 const {article_id} = request.params;
 const {inc_votes} = request.body;
 
 updateArticleById(article_id, inc_votes).then((updatedArticle) => {
     response.status(200).send({updatedArticle})
+}).catch((error) => {
+    next(error)
 })
 }
 
