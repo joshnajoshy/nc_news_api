@@ -167,4 +167,16 @@ describe('GET: /api/articles/:article_id', () => {
         })
       })
     })
+    test('400: responds with bad request if article id is not a number', () => {
+      return request(app)
+      .post('/api/articles/bannana/comments')
+      .send({
+        username: 'butter_bridge',
+        body: 'article was a good read'
+      })
+      .expect(400)
+      .then(({body}) => {
+        expect(body.msg).toBe('bad request')
+      })
+    })
   })
