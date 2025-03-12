@@ -179,4 +179,16 @@ describe('GET: /api/articles/:article_id', () => {
         expect(body.msg).toBe('bad request')
       })
     })
+    test('400: responds with article not found when article_id is a number but article not found', () => {
+      return request(app)
+      .post('/api/articles/6789/comments')
+      .send({
+        username: 'butter_bridge',
+        body: 'article was a good read'
+      })
+      .expect(400)
+      .then(({body}) => {
+        expect(body.msg).toBe('article not found')
+      })
+    })
   })
