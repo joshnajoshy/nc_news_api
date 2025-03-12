@@ -204,4 +204,14 @@ describe('GET: /api/articles/:article_id', () => {
         expect(body.updatedArticle.votes).toBe(1)
       })
     })
+    test('200: successfully decrements an article votes by 100 by article_id', () => {
+      const articleUpdate = { inc_votes: -100 };
+      return request(app)
+      .patch('/api/articles/1')
+      .send(articleUpdate)
+      .expect(200)
+      .then(({body}) => {
+        expect(body.updatedArticle.votes).toBe(0)
+      })
   })
+})
