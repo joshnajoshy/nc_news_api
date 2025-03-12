@@ -87,12 +87,7 @@ describe('GET: /api/articles/:article_id', () => {
         .then(({body}) => {
           const {articles} = body;
           expect(articles.length).toBeGreaterThan(0)
-          const results = []
-          articles.filter((article) => {
-            results.push(article.created_at)
-          })
-          const expectedResult = [...results].sort((a,b) => b - a)
-          expect(results[0]).toEqual(expectedResult[0])
+          expect(articles).toBeSorted({descending: true })
           articles.forEach((article) => {
           expect(article).toMatchObject({
             article_id: expect.any(Number),
@@ -105,15 +100,7 @@ describe('GET: /api/articles/:article_id', () => {
             comment_count: expect.any(Number)
         })
         expect(article).not.toMatchObject({
-          article_id: expect.any(Number),
-          title: expect.any(String),
-          topic: expect.any(String),
-          author: expect.any(String),
-          body: expect.any(String),
-          created_at: expect.any(String),
-          votes: expect.any(Number),
-          article_img_url: expect.any(String),
-          comment_count: expect.any(Number)
+          body: expect.any(String)
       })
       })
         })
@@ -127,14 +114,8 @@ describe('GET: /api/articles/:article_id', () => {
       .expect(200)
       .then(({body}) => {
         const {comments} = body
-        console.log(comments)
         expect(comments.length).toBe(2) 
-        const result = []
-        comments.filter((comment) => {
-          result.push(comment.created_at)
-        })
-        const expectedResult = [...result].sort((a,b) => b - a)
-        expect(result[0]).toEqual(expectedResult[0])
+        expect(comments).toBeSorted({descending: true })
         comments.forEach((comment) => {
           expect(comment).toMatchObject({
             comment_id: expect.any(Number),
@@ -161,7 +142,53 @@ describe('GET: /api/articles/:article_id', () => {
       .get('/api/articles/1000/comments')
       .expect(404)
       .then(({body}) => {
-        expect(body.msg).toBe('comments not found');
+        expect(body.msg).toBe('article not found');
+      })
+    })
+  })
+
+  describe('POST: /api/articles/:article_id/comments', () => {
+    test('201: creates a new comment', () => {
+      return request(app)
+      .post('/api/articles/3/comments')
+      .send({
+        username: 'butter_bridge',
+        body: 'article was a good read'
+      })
+      .expect(201)
+      .then(({body}) => {
+        const comment = body
+        expect(comment).toMatchObject({
+          comment_id: 19,
+          article_id: 3,
+          author: 'butter_bridge',
+          body: 'article was a good read',
+          votes: 0
+        })
+      })
+    })
+    test('400: responds with bad request if article id is not a number', () => {
+      return request(app)
+      .post('/api/articles/bannana/comments')
+      .send({
+        username: 'butter_bridge',
+        body: 'article was a good read'
+      })
+      .expect(400)
+      .then(({body}) => {
+        expect(body.msg).toBe('bad request')
+      })
+    })
+    test('400: responds with article not found when article_id is a number but article not found', () => {
+      return request(app)
+      .post('/api/articles/6789/comments')
+      .send({
+        username: 'butter_bridge',
+        body: 'article was a good read'
+      })
+      .expect(400)
+      .then(({body}) => {
+        expect(body.msg).toBe('article not found')
       })
     })
   })

@@ -1,5 +1,6 @@
 const endpoints = require('../endpoints.json');
-const {fetchAllTopics, fetchArticleById, fetchAllArticles, fetchAllCommentsByArticleId} = require('../models/api.models')
+const {fetchAllTopics, fetchArticleById, fetchAllArticles, fetchAllCommentsByArticleId, insertComment} = require('../models/api.models')
+const checkExists = require('../models/category.models')
 
 const getAllEndpoints = (request, response) => {
     response.status(200).send({endpoints})
@@ -28,11 +29,30 @@ const getAllArticles = (request, response) => {
 
 const getAllCommentsByArticleId = (request, response, next) => {
     const {article_id} = request.params
-    fetchAllCommentsByArticleId(article_id).then((comments) => {
+    const promises = [fetchAllCommentsByArticleId(article_id)]
+    if(article_id){
+        promises.push(checkExists('comments', 'article_id', article_id))
+    }
+    Promise.all(promises).then(([comments]) => {
         response.status(200).send({comments})
     }).catch((error) => {
         next(error)
     })
 }
 
-module.exports = {getAllEndpoints, getAllTopics, getArticlesById, getAllArticles, getAllCommentsByArticleId};
+const postComment = (request, response, next) => {
+const {username, body} = request.body
+const {article_id} = request.params
+const promises = [insertComment(username, body, article_id)]
+if(article_id){
+    promises.push(checkExists('articles', 'article_id', article_id))
+}
+Promise.all(promises).then(([data]) => {
+    response.status(201).send(data[0])
+}).catch((error) => {
+    next(error)
+})
+}
+
+
+module.exports = {getAllEndpoints, getAllTopics, getArticlesById, getAllArticles, getAllCommentsByArticleId, postComment};
