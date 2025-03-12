@@ -16,24 +16,24 @@ const fetchArticleById = (article_id) => {
 }
 
 const fetchAllArticles = () => {
-    return db.query(`ALTER TABLE articles DROP COLUMN body`).then(() => {
-        return db.query(`ALTER TABLE articles ADD COLUMN comment_count INT DEFAULT 0`).then(() => {
-            return db.query(`UPDATE articles SET comment_count = (SELECT COUNT(article_id) FROM comments WHERE comments.article_id = articles.article_id)`).then(() => {
-                return db.query(`SELECT * FROM articles ORDER BY created_at DESC`).then(({rows}) => {
+                return db.query(`SELECT articles.article_id, articles.title, articles.topic,  articles.author, articles.created_at, articles.votes, articles.article_img_url, COUNT(comments.article_id)::INT AS comment_count FROM articles LEFT JOIN comments ON comments.article_id = articles.article_id GROUP BY articles.article_id ORDER BY created_at DESC`).then(({rows}) => {
                     return rows;
                 })
-            })
-        })
-    })
-}
+            }
 
 const fetchAllCommentsByArticleId = (article_id) => {
 return db.query(`SELECT * FROM comments WHERE article_id = $1 ORDER BY created_at DESC`, [article_id]).then(({rows}) => {
     if(rows.length === 0){
-        return Promise.reject({status: 404, msg: 'comments not found'})
+        return Promise.reject({status: 404, msg: 'article not found'})
     }
     return rows
 })
 }
 
-module.exports = {fetchAllTopics, fetchArticleById, fetchAllArticles, fetchAllCommentsByArticleId};
+const insertComment = (username, body, article_id) => {
+return db.query(`INSERT INTO comments (article_id, body, author) VALUES ($1, $2, $3) RETURNING *`, [article_id, body, username]).then(({rows}) => {
+    return rows;
+})
+}
+
+module.exports = {fetchAllTopics, fetchArticleById, fetchAllArticles, fetchAllCommentsByArticleId, insertComment};
