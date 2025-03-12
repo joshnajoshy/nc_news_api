@@ -33,4 +33,11 @@ return db.query(`INSERT INTO comments (article_id, body, author) VALUES ($1, $2,
 })
 }
 
-module.exports = {fetchAllTopics, fetchArticleById, fetchAllArticles, fetchAllCommentsByArticleId, insertComment};
+const updateArticleById = (article_id, inc_votes) => {
+const queryString = `UPDATE articles SET votes = votes + $1 WHERE article_id = $2 RETURNING *`
+return db.query(queryString, [inc_votes, article_id]).then(({rows}) => {
+    return rows[0]
+})
+}
+
+module.exports = {fetchAllTopics, fetchArticleById, fetchAllArticles, fetchAllCommentsByArticleId, insertComment, updateArticleById};

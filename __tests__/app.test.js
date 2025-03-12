@@ -192,3 +192,16 @@ describe('GET: /api/articles/:article_id', () => {
       })
     })
   })
+
+  describe('PATCH /api/articles/:article_id', () => {
+    test('200: successfully increments an article votes by 1 by article_id', () => {
+      const articleUpdate = { inc_votes: 1 };
+      return request(app)
+      .patch('/api/articles/2')
+      .send(articleUpdate)
+      .expect(200)
+      .then(({body}) => {
+        expect(body.updatedArticle.votes).toBe(1)
+      })
+    })
+  })
