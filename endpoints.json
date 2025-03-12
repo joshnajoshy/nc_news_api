@@ -65,5 +65,19 @@
         }
       ]
     }
+  },
+  "POST /api/articles/:article_id/comments": {
+    "description": "serves an object of the comment that has been added to the specific article_id",
+    "queries": [],
+    "exampleResponse": {
+      "comment": {
+        "comment_id": 19,
+        "article_id": 3,
+        "body": "article was a good read",
+        "votes": 0,
+        "author": "butter_bridge2",
+        "created_at": null
+      }
+    }
   }
 }
