@@ -87,7 +87,7 @@ describe('GET: /api/articles/:article_id', () => {
         .then(({body}) => {
           const {articles} = body;
           expect(articles.length).toBeGreaterThan(0)
-          expect(articles).toBeSorted({descending: true })
+          expect(articles).toBeSorted('created_at',{descending: true })
           articles.forEach((article) => {
           expect(article).toMatchObject({
             article_id: expect.any(Number),
@@ -115,7 +115,7 @@ describe('GET: /api/articles/:article_id', () => {
       .then(({body}) => {
         const {comments} = body
         expect(comments.length).toBe(2) 
-        expect(comments).toBeSorted({descending: true })
+        expect(comments).toBeSorted('created_at',{descending: true })
         comments.forEach((comment) => {
           expect(comment).toMatchObject({
             comment_id: expect.any(Number),
@@ -294,6 +294,32 @@ describe('GET /api/users', () => {
           username: expect.any(String),
           name: expect.any(String),
           avatar_url: expect.any(String)
+        })
+      })
+    })
+  })
+})
+
+describe('GET /api/articles?sort_by=created_at', () => {
+  test('200: if queried with sort_by, returns an object that is sorted by created_at', () => {
+    return request(app)
+    .get('/api/articles?sort_by=created_at')
+    .expect(200)
+    .then(({body}) => {
+      console.log(body)
+      const {articles} = body;
+      expect(articles.length).toBeGreaterThan(0)
+      expect(articles).toBeSortedBy('created_at', {descending: true})
+      articles.forEach((article) => {
+        expect(article).toMatchObject({
+          article_id: expect.any(Number),
+          title: expect.any(String),
+          topic: expect.any(String),
+          author: expect.any(String),
+          body: expect.any(String),
+          created_at: expect.any(String),
+          votes: expect.any(Number),
+          article_img_url: expect.any(String)
         })
       })
     })

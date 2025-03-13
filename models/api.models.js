@@ -15,8 +15,37 @@ const fetchArticleById = (article_id) => {
     })
 }
 
-const fetchAllArticles = () => {
-                return db.query(`SELECT articles.article_id, articles.title, articles.topic,  articles.author, articles.created_at, articles.votes, articles.article_img_url, COUNT(comments.article_id)::INT AS comment_count FROM articles LEFT JOIN comments ON comments.article_id = articles.article_id GROUP BY articles.article_id ORDER BY created_at DESC`).then(({rows}) => {
+const fetchAllArticles = (sort_by) => {
+    let queryString = `SELECT articles.article_id, articles.title, articles.topic,  articles.author, articles.created_at, articles.votes, articles.article_img_url, COUNT(comments.article_id)::INT AS comment_count FROM articles LEFT JOIN comments ON comments.article_id = articles.article_id GROUP BY articles.article_id ORDER BY created_at DESC`
+    if(sort_by){  
+        switch(sort_by){
+            case (sort_by = 'created_at'): 
+            queryString = `SELECT * FROM articles ORDER BY created_at DESC `;
+            break;
+            case (sort_by = 'article_id'):
+            queryString = `SELECT * FROM articles ORDER BY article_id DESC `;
+            break;
+            case (sort_by = 'title'):
+            queryString = `SELECT * FROM articles ORDER BY title DESC `;
+            break;
+            case (sort_by = 'topic'):
+            queryString = `SELECT * FROM articles ORDER BY topic DESC `;
+            break;
+            case (sort_by = 'author'):
+            queryString = `SELECT * FROM articles ORDER BY author DESC `;
+            break;
+            case (sort_by = 'body'):
+            queryString = `SELECT * FROM articles ORDER BY body DESC `;
+            break;
+            case (sort_by = 'votes'):
+            queryString = `SELECT * FROM articles ORDER BY votes DESC`;
+            break;
+            case (sort_by = 'article_img_url'):
+            queryString = `SELECT * FROM articles ORDER BY article_img_url DESC `;
+            break;
+        }
+    }
+    return db.query(queryString).then(({rows}) => {
                     return rows;
                 })
             }
