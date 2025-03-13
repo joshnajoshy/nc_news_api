@@ -27,6 +27,12 @@ return db.query(`SELECT * FROM comments WHERE article_id = $1 ORDER BY created_a
 })
 }
 
+const fetchAllUsers = () => {
+    return db.query(`SELECT * FROM users`).then(({rows}) => {
+        return rows
+    })
+}
+
 const insertComment = (username, body, article_id) => {
 return db.query(`INSERT INTO comments (article_id, body, author) VALUES ($1, $2, $3) RETURNING *`, [article_id, body, username]).then(({rows}) => {
     return rows;
@@ -47,4 +53,4 @@ return db.query(queryString, [comment_id]).then(({rows}) => {
 })
 }
 
-module.exports = {fetchAllTopics, fetchArticleById, fetchAllArticles, fetchAllCommentsByArticleId, insertComment, updateArticleById, deleteComment};
+module.exports = {fetchAllTopics, fetchArticleById, fetchAllArticles, fetchAllCommentsByArticleId, insertComment, updateArticleById, deleteComment, fetchAllUsers};

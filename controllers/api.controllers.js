@@ -1,5 +1,5 @@
 const endpoints = require('../endpoints.json');
-const {fetchAllTopics, fetchArticleById, fetchAllArticles, fetchAllCommentsByArticleId, insertComment, updateArticleById, deleteComment} = require('../models/api.models')
+const {fetchAllTopics, fetchArticleById, fetchAllArticles, fetchAllCommentsByArticleId, insertComment, updateArticleById, deleteComment, fetchAllUsers} = require('../models/api.models')
 const {checkArticleExists, checkCommentExists} = require('../models/category.models')
 
 const getAllEndpoints = (request, response) => {
@@ -37,6 +37,12 @@ const getAllCommentsByArticleId = (request, response, next) => {
         response.status(200).send({comments})
     }).catch((error) => {
         next(error)
+    })
+}
+
+const getAllUsers = (request, response) => {
+    fetchAllUsers().then((users) => {
+        response.status(200).send({users})
     })
 }
 
@@ -84,4 +90,4 @@ Promise.all(promises).then((deletedComment) => {
 }
 
 
-module.exports = {getAllEndpoints, getAllTopics, getArticlesById, getAllArticles, getAllCommentsByArticleId, postComment, patchArticleById, deleteCommentById};
+module.exports = {getAllEndpoints, getAllTopics, getArticlesById, getAllArticles, getAllCommentsByArticleId, postComment, patchArticleById, deleteCommentById, getAllUsers};
