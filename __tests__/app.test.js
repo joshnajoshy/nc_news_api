@@ -201,8 +201,15 @@ describe('GET: /api/articles/:article_id', () => {
       .send(articleUpdate)
       .expect(200)
       .then(({body}) => {
-        console.log(body)
         expect(body.updatedArticle.votes).toBe(1)
+        expect(typeof body.updatedArticle.article_id).toBe('number')
+        expect(typeof body.updatedArticle.title).toBe('string')
+        expect(typeof body.updatedArticle.topic).toBe('string')
+        expect(typeof body.updatedArticle.author).toBe('string')
+        expect(typeof body.updatedArticle.body).toBe('string')
+        expect(typeof body.updatedArticle.created_at).toBe('string')
+        expect(typeof body.updatedArticle.votes).toBe('number')
+        expect(typeof body.updatedArticle.article_img_url).toBe('string')
       })
     })
     test('200: successfully decrements an article votes by 100 by article_id', () => {
