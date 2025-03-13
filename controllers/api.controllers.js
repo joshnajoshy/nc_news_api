@@ -57,8 +57,13 @@ Promise.all(promises).then(([data]) => {
 const patchArticleById = (request, response, next) => {
 const {article_id} = request.params;
 const {inc_votes} = request.body;
+const promises = [updateArticleById(article_id, inc_votes)]
 
-updateArticleById(article_id, inc_votes).then((updatedArticle) => {
+if(article_id){
+    promises.push(checkExists('articles', 'article_id', article_id))
+}
+
+Promise.all(promises).then(([updatedArticle]) => {
     response.status(200).send({updatedArticle})
 }).catch((error) => {
     next(error)

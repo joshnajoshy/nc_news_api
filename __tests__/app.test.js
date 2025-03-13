@@ -137,7 +137,7 @@ describe('GET: /api/articles/:article_id', () => {
           expect(body.msg).toBe('bad request');
         })
     })
-    test('404: responds with comments not found if article_id is a number but article not found', () => {
+    test('404: responds with article not found if article_id is a number but article not found', () => {
       return request(app)
       .get('/api/articles/1000/comments')
       .expect(404)
@@ -222,6 +222,26 @@ describe('GET: /api/articles/:article_id', () => {
       .expect(400)
       .then(({body}) => {
         expect(body.msg).toBe('bad request')
+      })
+  })
+  test('400: when article_id is not a number', () => {
+    const articleUpdate = {inc_votes: 1}
+    return request(app)
+      .patch('/api/articles/bannana')
+      .send(articleUpdate)
+      .expect(400)
+      .then(({body}) => {
+        expect(body.msg).toBe('bad request')
+      })
+  })
+  test('404: responds with article not found when article is a number but article not found', () => {
+    const articleUpdate = {inc_votes: 1}
+    return request(app)
+      .patch('/api/articles/7777')
+      .send(articleUpdate)
+      .expect(404)
+      .then(({body}) => {
+        expect(body.msg).toBe('article not found')
       })
   })
 })
