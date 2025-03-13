@@ -40,4 +40,11 @@ return db.query(queryString, [inc_votes, article_id]).then(({rows}) => {
 })
 }
 
-module.exports = {fetchAllTopics, fetchArticleById, fetchAllArticles, fetchAllCommentsByArticleId, insertComment, updateArticleById};
+const deleteComment = (comment_id) => {
+    const queryString = `DELETE FROM comments WHERE comment_id = $1 RETURNING *`
+return db.query(queryString, [comment_id]).then(({rows}) => {
+    return rows;
+})
+}
+
+module.exports = {fetchAllTopics, fetchArticleById, fetchAllArticles, fetchAllCommentsByArticleId, insertComment, updateArticleById, deleteComment};

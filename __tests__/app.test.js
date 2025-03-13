@@ -253,3 +253,30 @@ describe('GET: /api/articles/:article_id', () => {
       })
   })
 })
+
+describe('DELETE /api/comments/:comment_id', () => {
+  test('204: successfully deletes the comment specified', () => {
+  return request(app)
+  .delete('/api/comments/1')
+  .expect(204)
+  .then(({body}) => {
+    expect(body).toEqual({})
+  })
+  })
+  test('400: responds with bad request when comment_id is not a number', () => {
+    return request(app)
+    .delete('/api/comments/bannana')
+    .expect(400)
+    .then(({body}) => {
+      expect(body.msg).toBe('bad request')
+    })
+  })
+  test('404: responds with comment not found when comment_id is a number but no comment exists', () => {
+    return request(app)
+    .delete('/api/comments/5555')
+    .expect(404)
+    .then(({body}) => {
+      expect(body.msg).toBe('comment not found')
+    })
+  })
+})
