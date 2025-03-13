@@ -271,4 +271,12 @@ describe('DELETE /api/comments/:comment_id', () => {
       expect(body.msg).toBe('bad request')
     })
   })
+  test('404: responds with comment not found when comment_id is a number but no comment exists', () => {
+    return request(app)
+    .delete('/api/comments/5555')
+    .expect(404)
+    .then(({body}) => {
+      expect(body.msg).toBe('comment not found')
+    })
+  })
 })

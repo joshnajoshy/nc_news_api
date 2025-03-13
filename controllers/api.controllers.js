@@ -1,6 +1,6 @@
 const endpoints = require('../endpoints.json');
 const {fetchAllTopics, fetchArticleById, fetchAllArticles, fetchAllCommentsByArticleId, insertComment, updateArticleById, deleteComment} = require('../models/api.models')
-const checkExists = require('../models/category.models')
+const {checkArticleExists, checkCommentExists} = require('../models/category.models')
 
 const getAllEndpoints = (request, response) => {
     response.status(200).send({endpoints})
@@ -31,7 +31,7 @@ const getAllCommentsByArticleId = (request, response, next) => {
     const {article_id} = request.params
     const promises = [fetchAllCommentsByArticleId(article_id)]
     if(article_id){
-        promises.push(checkExists('comments', 'article_id', article_id))
+        promises.push(checkArticleExists('comments', 'article_id', article_id))
     }
     Promise.all(promises).then(([comments]) => {
         response.status(200).send({comments})
@@ -45,7 +45,7 @@ const {username, body} = request.body
 const {article_id} = request.params
 const promises = [insertComment(username, body, article_id)]
 if(article_id){
-    promises.push(checkExists('articles', 'article_id', article_id))
+    promises.push(checkArticleExists('articles', 'article_id', article_id))
 }
 Promise.all(promises).then(([data]) => {
     response.status(201).send(data[0])
@@ -60,7 +60,7 @@ const {inc_votes} = request.body;
 const promises = [updateArticleById(article_id, inc_votes)]
 
 if(article_id){
-    promises.push(checkExists('articles', 'article_id', article_id))
+    promises.push(checkArticleExists('articles', 'article_id', article_id))
 }
 
 Promise.all(promises).then(([updatedArticle]) => {
@@ -72,7 +72,11 @@ Promise.all(promises).then(([updatedArticle]) => {
 
 const deleteCommentById = (request, response, next) => {
 const {comment_id} = request.params 
-deleteComment(comment_id).then((deletedComment) => {
+const promises = [deleteComment(comment_id)]
+if(comment_id){
+    promises.push(checkCommentExists('comments', 'comment_id', comment_id))
+}
+Promise.all(promises).then((deletedComment) => {
     response.status(204).send({deletedComment})
 }).catch((error) => {
     next(error)
