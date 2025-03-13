@@ -263,4 +263,12 @@ describe('DELETE /api/comments/:comment_id', () => {
     expect(body).toEqual({})
   })
   })
+  test('400: responds with bad request when comment_id is not a number', () => {
+    return request(app)
+    .delete('/api/comments/bannana')
+    .expect(400)
+    .then(({body}) => {
+      expect(body.msg).toBe('bad request')
+    })
+  })
 })

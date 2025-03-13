@@ -70,10 +70,12 @@ Promise.all(promises).then(([updatedArticle]) => {
 })
 }
 
-const deleteCommentById = (request, response) => {
+const deleteCommentById = (request, response, next) => {
 const {comment_id} = request.params 
 deleteComment(comment_id).then((deletedComment) => {
     response.status(204).send({deletedComment})
+}).catch((error) => {
+    next(error)
 })
 }
 
