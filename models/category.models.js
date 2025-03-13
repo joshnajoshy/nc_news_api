@@ -5,7 +5,6 @@ const checkArticleExists = (table, column, value) => {
     if(!value){
         queryStr = format(`SELECT %I FROM %I `, column, table);
         return db.query(queryStr).then(({rows}) => {
-            console.log(rows)
         if(rows.length === 0){
             return Promise.reject({status: 404, msg: 'column not found'});
         } else {

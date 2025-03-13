@@ -301,15 +301,36 @@ describe('GET /api/users', () => {
 })
 
 describe('GET /api/articles?sort_by=created_at', () => {
-  test('200: if queried with sort_by, returns an object that is sorted by created_at', () => {
+  test('200: if queried with sort_by, returns an object that is sorted by created_at in descending order', () => {
     return request(app)
-    .get('/api/articles?sort_by=created_at')
+    .get('/api/articles?sort_by=created_at&order=desc')
     .expect(200)
     .then(({body}) => {
-      console.log(body)
       const {articles} = body;
       expect(articles.length).toBeGreaterThan(0)
       expect(articles).toBeSortedBy('created_at', {descending: true})
+      articles.forEach((article) => {
+        expect(article).toMatchObject({
+          article_id: expect.any(Number),
+          title: expect.any(String),
+          topic: expect.any(String),
+          author: expect.any(String),
+          body: expect.any(String),
+          created_at: expect.any(String),
+          votes: expect.any(Number),
+          article_img_url: expect.any(String)
+        })
+      })
+    })
+  })
+  test('200: if queried with sort_by and order, returns an object that is sorted by created_at in ascending order', () => {
+    return request(app)
+    .get('/api/articles?sort_by=created_at&order=asc')
+    .expect(200)
+    .then(({body}) => {
+      const {articles} = body;
+      expect(articles.length).toBeGreaterThan(0)
+      expect(articles).toBeSortedBy('created_at')
       articles.forEach((article) => {
         expect(article).toMatchObject({
           article_id: expect.any(Number),
