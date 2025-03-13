@@ -201,6 +201,7 @@ describe('GET: /api/articles/:article_id', () => {
       .send(articleUpdate)
       .expect(200)
       .then(({body}) => {
+        console.log(body)
         expect(body.updatedArticle.votes).toBe(1)
       })
     })
