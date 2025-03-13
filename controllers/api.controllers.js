@@ -1,5 +1,5 @@
 const endpoints = require('../endpoints.json');
-const {fetchAllTopics, fetchArticleById, fetchAllArticles, fetchAllCommentsByArticleId, insertComment, updateArticleById} = require('../models/api.models')
+const {fetchAllTopics, fetchArticleById, fetchAllArticles, fetchAllCommentsByArticleId, insertComment, updateArticleById, deleteComment} = require('../models/api.models')
 const checkExists = require('../models/category.models')
 
 const getAllEndpoints = (request, response) => {
@@ -70,5 +70,12 @@ Promise.all(promises).then(([updatedArticle]) => {
 })
 }
 
+const deleteCommentById = (request, response) => {
+const {comment_id} = request.params 
+deleteComment(comment_id).then((deletedComment) => {
+    response.status(204).send({deletedComment})
+})
+}
 
-module.exports = {getAllEndpoints, getAllTopics, getArticlesById, getAllArticles, getAllCommentsByArticleId, postComment, patchArticleById};
+
+module.exports = {getAllEndpoints, getAllTopics, getArticlesById, getAllArticles, getAllCommentsByArticleId, postComment, patchArticleById, deleteCommentById};
