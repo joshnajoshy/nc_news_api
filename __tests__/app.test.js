@@ -345,4 +345,12 @@ describe('GET /api/articles?sort_by=created_at', () => {
       })
     })
   })
+  test('400: responds with column doesn\'t exist when column name doesn\'t exist', () => {
+    return request(app)
+    .get('/api/articles?sort_by=bannana&order=asc')
+    .expect(400)
+    .then(({body}) => {
+      expect(body.msg).toBe('column doesn\'t exist')
+    })
+  })
 })

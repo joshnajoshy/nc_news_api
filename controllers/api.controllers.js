@@ -21,7 +21,7 @@ fetchArticleById(article_id).then((article) => {
 })
 }
 
-const getAllArticles = (request, response) => {
+const getAllArticles = (request, response, next) => {
     const {sort_by} = request.query;
     const {order} = request.query
     const promises = [fetchAllArticles(sort_by, order)]
@@ -30,6 +30,8 @@ const getAllArticles = (request, response) => {
     }
     Promise.all(promises).then(([articles]) => {
         response.status(200).send({articles})
+    }).catch((error) => {
+        next(error)
     })
 }
 

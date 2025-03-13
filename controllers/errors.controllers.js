@@ -5,6 +5,8 @@ if(error.code === '22P02'){
 } 
 else if(error.code === '23503'){
     response.status(400).send({msg: 'article not found'})
+} else if(error.code === '42703'){
+    response.status(400).send({msg: 'column doesn\'t exist'})
 } 
 next(error)
 }
