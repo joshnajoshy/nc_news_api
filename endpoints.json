@@ -115,5 +115,33 @@
         }
       ]
     }
+  },
+  "GET /api/articles?sort_by=created_at&order=desc": {
+    "description": "serves an array with all articles sorted by queries in the order specified",
+    "queries": ["sort_by", "order"],
+    "exampleResponse": {
+      "articles": [
+        {
+          "article_id": 3,
+          "title": "Eight pug gifs that remind me of mitch",
+          "topic": "mitch",
+          "author": "icellusedkars",
+          "body": "some gifs",
+          "created_at": "2020-11-03T09:12:00.000Z",
+          "votes": 0,
+          "article_img_url": "https://images.pexels.com/photos/158651/news-newsletter-newspaper-information-158651.jpeg?w=700&h=700"
+        },
+        {
+          "article_id": 6,
+          "title": "A",
+          "topic": "mitch",
+          "author": "icellusedkars",
+          "body": "Delicious tin of cat food",
+          "created_at": "2020-10-18T01:00:00.000Z",
+          "votes": 0,
+          "article_img_url": "https://images.pexels.com/photos/158651/news-newsletter-newspaper-information-158651.jpeg?w=700&h=700"
+        }
+      ]
+    }
   }
   }

@@ -21,9 +21,17 @@ fetchArticleById(article_id).then((article) => {
 })
 }
 
-const getAllArticles = (request, response) => {
-    fetchAllArticles().then((articles) => {
+const getAllArticles = (request, response, next) => {
+    const {sort_by} = request.query;
+    const {order} = request.query
+    const promises = [fetchAllArticles(sort_by, order)]
+    if(sort_by){
+        promises.push(checkArticleExists('articles', sort_by))
+    }
+    Promise.all(promises).then(([articles]) => {
         response.status(200).send({articles})
+    }).catch((error) => {
+        next(error)
     })
 }
 

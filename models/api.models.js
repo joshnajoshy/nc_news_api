@@ -1,4 +1,5 @@
 const db = require("../db/connection");
+const format = require('pg-format');
 
 const fetchAllTopics = () => {
 return db.query(`SELECT * FROM topics`).then(({rows}) => {
@@ -15,10 +16,17 @@ const fetchArticleById = (article_id) => {
     })
 }
 
-const fetchAllArticles = () => {
-                return db.query(`SELECT articles.article_id, articles.title, articles.topic,  articles.author, articles.created_at, articles.votes, articles.article_img_url, COUNT(comments.article_id)::INT AS comment_count FROM articles LEFT JOIN comments ON comments.article_id = articles.article_id GROUP BY articles.article_id ORDER BY created_at DESC`).then(({rows}) => {
-                    return rows;
-                })
+const fetchAllArticles = (sort_by, order) => {
+    let queryString = `SELECT articles.article_id, articles.title, articles.topic,  articles.author, articles.created_at, articles.votes, articles.article_img_url, COUNT(comments.article_id)::INT AS comment_count FROM articles LEFT JOIN comments ON comments.article_id = articles.article_id GROUP BY articles.article_id ORDER BY created_at DESC`
+
+    if(sort_by && order === 'asc'){
+        queryString = format(`SELECT * FROM articles ORDER BY %I`, sort_by)
+    } else if ( sort_by && order === 'desc'){
+        queryString = format(`SELECT * FROM articles ORDER BY %I DESC`, sort_by)
+    }
+    return db.query(queryString).then(({rows}) => {
+        return rows;
+    })
             }
 
 const fetchAllCommentsByArticleId = (article_id) => {
