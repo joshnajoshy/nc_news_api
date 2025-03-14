@@ -1,6 +1,6 @@
 const endpoints = require('../endpoints.json');
 const {fetchAllTopics, fetchArticleById, fetchAllArticles, fetchAllCommentsByArticleId, insertComment, updateArticleById, deleteComment, fetchAllUsers} = require('../models/api.models')
-const {checkArticleExists, checkCommentExists} = require('../models/category.models')
+const checkExists = require('../models/category.models')
 
 const getAllEndpoints = (request, response) => {
     response.status(200).send({endpoints})
@@ -23,10 +23,14 @@ fetchArticleById(article_id).then((article) => {
 
 const getAllArticles = (request, response, next) => {
     const {sort_by} = request.query;
-    const {order} = request.query
-    const promises = [fetchAllArticles(sort_by, order)]
+    const {order} = request.query;
+    const {topic} = request.query;
+    const promises = [fetchAllArticles(sort_by, order, topic)]
     if(sort_by){
-        promises.push(checkArticleExists('articles', sort_by))
+        promises.push(checkExists('articles', sort_by))
+    }
+    if(topic){
+        promises.push(checkExists('articles', 'topic', topic))
     }
     Promise.all(promises).then(([articles]) => {
         response.status(200).send({articles})
@@ -39,7 +43,7 @@ const getAllCommentsByArticleId = (request, response, next) => {
     const {article_id} = request.params
     const promises = [fetchAllCommentsByArticleId(article_id)]
     if(article_id){
-        promises.push(checkArticleExists('comments', 'article_id', article_id))
+        promises.push(checkExists('comments', 'article_id', article_id))
     }
     Promise.all(promises).then(([comments]) => {
         response.status(200).send({comments})
@@ -59,7 +63,7 @@ const {username, body} = request.body
 const {article_id} = request.params
 const promises = [insertComment(username, body, article_id)]
 if(article_id){
-    promises.push(checkArticleExists('articles', 'article_id', article_id))
+    promises.push(checkExists('articles', 'article_id', article_id))
 }
 Promise.all(promises).then(([data]) => {
     response.status(201).send(data[0])
@@ -74,7 +78,7 @@ const {inc_votes} = request.body;
 const promises = [updateArticleById(article_id, inc_votes)]
 
 if(article_id){
-    promises.push(checkArticleExists('articles', 'article_id', article_id))
+    promises.push(checkExists('articles', 'article_id', article_id))
 }
 
 Promise.all(promises).then(([updatedArticle]) => {
@@ -88,7 +92,7 @@ const deleteCommentById = (request, response, next) => {
 const {comment_id} = request.params 
 const promises = [deleteComment(comment_id)]
 if(comment_id){
-    promises.push(checkCommentExists('comments', 'comment_id', comment_id))
+    promises.push(checkExists('comments', 'comment_id', comment_id))
 }
 Promise.all(promises).then((deletedComment) => {
     response.status(204).send({deletedComment})
