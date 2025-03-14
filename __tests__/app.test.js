@@ -378,4 +378,12 @@ describe('GET /api/articles?topic=cats', () => {
       })
     })
 })
+test('404: responds with value not found in table  when topic value is not a value', () => {
+  return request(app)
+  .get('/api/articles?topic=1')
+  .expect(404)
+  .then(({body}) => {
+    expect(body.msg).toBe('value not found in table')
+  })
+})
 })
