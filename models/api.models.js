@@ -16,15 +16,25 @@ const fetchArticleById = (article_id) => {
     })
 }
 
-const fetchAllArticles = (sort_by, order) => {
-    let queryString = `SELECT articles.article_id, articles.title, articles.topic,  articles.author, articles.created_at, articles.votes, articles.article_img_url, COUNT(comments.article_id)::INT AS comment_count FROM articles LEFT JOIN comments ON comments.article_id = articles.article_id GROUP BY articles.article_id ORDER BY created_at DESC`
+const fetchAllArticles = (sort_by, order, topic) => {
+    let queryString = 'SELECT articles.article_id, articles.title, articles.topic,  articles.author, articles.created_at, articles.votes, articles.article_img_url, COUNT(comments.article_id)::INT AS comment_count FROM articles LEFT JOIN comments ON comments.article_id = articles.article_id GROUP BY articles.article_id'
+    let queryValues = []
 
-    if(sort_by && order === 'asc'){
-        queryString = format(`SELECT * FROM articles ORDER BY %I`, sort_by)
-    } else if ( sort_by && order === 'desc'){
-        queryString = format(`SELECT * FROM articles ORDER BY %I DESC`, sort_by)
+    if(sort_by){
+        if(order === 'asc'){
+            queryString += ` ORDER BY ${sort_by} `
+        } else if (order === 'desc'){
+            queryString += ` ORDER BY ${sort_by} DESC `
+        }
+    } else if(topic){
+        queryString += " HAVING topic = $1"
+        queryValues.push(topic)
     }
-    return db.query(queryString).then(({rows}) => {
+    
+    else {
+        queryString += " ORDER BY created_at DESC;"
+    }
+    return db.query(queryString, queryValues).then(({rows}) => {
         return rows;
     })
             }

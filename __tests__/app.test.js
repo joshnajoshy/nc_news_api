@@ -142,7 +142,7 @@ describe('GET: /api/articles/:article_id', () => {
       .get('/api/articles/1000/comments')
       .expect(404)
       .then(({body}) => {
-        expect(body.msg).toBe('article not found');
+        expect(body.msg).toBe('value not found in table');
       })
     })
   })
@@ -179,14 +179,14 @@ describe('GET: /api/articles/:article_id', () => {
         expect(body.msg).toBe('bad request')
       })
     })
-    test('400: responds with article not found when article_id is a number but article not found', () => {
+    test('404: responds with article not found when article_id is a number but article not found', () => {
       return request(app)
       .post('/api/articles/6789/comments')
       .send({
         username: 'butter_bridge',
         body: 'article was a good read'
       })
-      .expect(400)
+      .expect(404)
       .then(({body}) => {
         expect(body.msg).toBe('article not found')
       })
@@ -249,7 +249,7 @@ describe('GET: /api/articles/:article_id', () => {
       .send(articleUpdate)
       .expect(404)
       .then(({body}) => {
-        expect(body.msg).toBe('article not found')
+        expect(body.msg).toBe('value not found in table')
       })
   })
 })
@@ -276,7 +276,7 @@ describe('DELETE /api/comments/:comment_id', () => {
     .delete('/api/comments/5555')
     .expect(404)
     .then(({body}) => {
-      expect(body.msg).toBe('comment not found')
+      expect(body.msg).toBe('value not found in table')
     })
   })
 })
@@ -315,10 +315,10 @@ describe('GET /api/articles?sort_by=created_at', () => {
           title: expect.any(String),
           topic: expect.any(String),
           author: expect.any(String),
-          body: expect.any(String),
           created_at: expect.any(String),
           votes: expect.any(Number),
-          article_img_url: expect.any(String)
+          article_img_url: expect.any(String),
+          comment_count: expect.any(Number)
         })
       })
     })
@@ -337,20 +337,53 @@ describe('GET /api/articles?sort_by=created_at', () => {
           title: expect.any(String),
           topic: expect.any(String),
           author: expect.any(String),
-          body: expect.any(String),
           created_at: expect.any(String),
           votes: expect.any(Number),
-          article_img_url: expect.any(String)
+          article_img_url: expect.any(String),
+          comment_count: expect.any(Number)
         })
       })
     })
   })
-  test('400: responds with column doesn\'t exist when column name doesn\'t exist', () => {
+  test('404: responds with column doesn\'t exist when column name doesn\'t exist', () => {
     return request(app)
     .get('/api/articles?sort_by=bannana&order=asc')
-    .expect(400)
+    .expect(404)
     .then(({body}) => {
-      expect(body.msg).toBe('column doesn\'t exist')
+      expect(body.msg).toBe('column not found')
     })
   })
+})
+
+describe('GET /api/articles?topic=cats', () => {
+  test('200: responds with all the articles with the specified topic when queried with a topic', () => {
+    return request(app)
+    .get('/api/articles?topic=cats')
+    .expect(200)
+    .then(({body}) => {
+      const {articles} = body;
+      expect(articles.length).toBe(1)
+      expect(articles[0].topic).toBe('cats')
+      articles.forEach((article) => {
+        expect(article).toMatchObject({
+          article_id: expect.any(Number),
+          title: expect.any(String),
+          topic: expect.any(String),
+          author: expect.any(String),
+          created_at: expect.any(String),
+          votes: expect.any(Number),
+          article_img_url: expect.any(String),
+          comment_count: expect.any(Number)
+        })
+      })
+    })
+})
+test('404: responds with value not found in table  when topic value is not a value', () => {
+  return request(app)
+  .get('/api/articles?topic=1')
+  .expect(404)
+  .then(({body}) => {
+    expect(body.msg).toBe('value not found in table')
+  })
+})
 })

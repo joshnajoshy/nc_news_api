@@ -4,9 +4,9 @@ if(error.code === '22P02'){
     response.status(400).send({msg: 'bad request'})
 } 
 else if(error.code === '23503'){
-    response.status(400).send({msg: 'article not found'})
+    response.status(404).send({msg: 'article not found'})
 } else if(error.code === '42703'){
-    response.status(400).send({msg: 'column doesn\'t exist'})
+    response.status(404).send({msg: 'column not found'})
 } 
 next(error)
 }
