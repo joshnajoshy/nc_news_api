@@ -387,3 +387,39 @@ test('404: responds with value not found in table  when topic value is not a val
   })
 })
 })
+
+describe('GET /api/articles/:article_id (comment_count)', () => {
+  test('200: responds with an object that has comment_count', () => {
+    return request(app) 
+    .get('/api/articles/1')
+    .expect(200)
+    .then(({body}) => {
+      const {article} = body
+      expect(article.article_id).toBe(1)
+      expect(typeof article.article_id).toBe('number')
+      expect(typeof article.title).toBe('string')
+      expect(typeof article.topic).toBe('string')
+      expect(typeof article.author).toBe('string')
+      expect(typeof article.created_at).toBe('string')
+      expect(typeof article.votes).toBe('number')
+      expect(typeof article.article_img_url).toBe('string')
+      expect(typeof article.comment_count).toBe('number')
+    })
+  })
+  test('400: responds with bad request when article_id is a string', () => {
+    return request(app)
+    .get('/api/articles/bannana')
+    .expect(400)
+    .then(({body}) => {
+      expect(body.msg).toBe('bad request')
+    })
+  })
+  test('404: responds with article not found when article_id is a number but article not found', () => {
+    return request(app)
+    .get('/api/articles/5555')
+    .expect(404)
+    .then(({body}) => {
+      expect(body.msg).toBe("article not found")
+    })
+  })
+})
