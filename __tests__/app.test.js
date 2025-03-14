@@ -394,7 +394,6 @@ describe('GET /api/articles/:article_id (comment_count)', () => {
     .get('/api/articles/1')
     .expect(200)
     .then(({body}) => {
-      console.log(body)
       const {article} = body
       expect(article.article_id).toBe(1)
       expect(typeof article.article_id).toBe('number')
@@ -413,6 +412,14 @@ describe('GET /api/articles/:article_id (comment_count)', () => {
     .expect(400)
     .then(({body}) => {
       expect(body.msg).toBe('bad request')
+    })
+  })
+  test('404: responds with article not found when article_id is a number but article not found', () => {
+    return request(app)
+    .get('/api/articles/5555')
+    .expect(404)
+    .then(({body}) => {
+      expect(body.msg).toBe("article not found")
     })
   })
 })
