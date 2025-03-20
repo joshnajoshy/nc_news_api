@@ -8,7 +8,7 @@ Please clone and open the repository on VS Code in order to follow a few steps t
 
 1- Please use npm install command on terminal to install nessessery packages
 
-2- Please ensure that all dependencies are install and listed in package.json
+2- Please ensure that all dependencies are installed and listed in package.json
     - Jest (npm install --save-dev jest)
     - Express (npm install express)
     - dotenv (npm i dotenv)
