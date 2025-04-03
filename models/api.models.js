@@ -51,8 +51,9 @@ const fetchAllUsers = () => {
     })
 }
 
-const insertComment = (username, body, article_id) => {
-return db.query(`INSERT INTO comments (article_id, body, author) VALUES ($1, $2, $3) RETURNING *`, [article_id, body, username]).then(({rows}) => {
+const insertComment = (username, body, article_id, created_at) => {
+return db.query(`INSERT INTO comments (article_id, body, author, created_at) VALUES ($1, $2, $3, $4) RETURNING *`, [article_id, body, username, created_at]).then(({rows}) => {
+    console.log(rows)
     return rows;
 })
 }

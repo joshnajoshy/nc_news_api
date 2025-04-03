@@ -167,6 +167,27 @@ describe('GET: /api/articles/:article_id', () => {
         })
       })
     })
+    test('201: creates a new comment', () => {
+      return request(app)
+      .post('/api/articles/3/comments')
+      .send({
+        username: 'butter_bridge',
+        body: 'article was great',
+        created_at: "2020-05-21 23:19:00",
+      })
+      .expect(201)
+      .then(({body}) => {
+        const comment = body
+        expect(comment).toMatchObject({
+          comment_id: 19,
+          article_id: 3,
+          author: 'butter_bridge',
+          body: 'article was great',
+          created_at: "2020-05-21T22:19:00.000Z",
+          votes: 0
+        })
+      })
+    })
     test('400: responds with bad request if article id is not a number', () => {
       return request(app)
       .post('/api/articles/bannana/comments')

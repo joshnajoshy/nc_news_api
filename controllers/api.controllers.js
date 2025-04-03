@@ -59,9 +59,9 @@ const getAllUsers = (request, response) => {
 }
 
 const postComment = (request, response, next) => {
-const {username, body} = request.body
+const {username, body, created_at} = request.body
 const {article_id} = request.params
-const promises = [insertComment(username, body, article_id)]
+const promises = [insertComment(username, body, article_id, created_at)]
 if(article_id){
     promises.push(checkExists('articles', 'article_id', article_id))
 }
