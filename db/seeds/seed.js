@@ -47,7 +47,7 @@ const seed = ({ topicData, userData, articleData, commentData }) => {
                      body TEXT,
                      votes INT DEFAULT 0,
                      author VARCHAR(50) REFERENCES users(username),
-                     created_at TIMESTAMP
+                     created_at TIMESTAMP 
                      );`);
   })
   .then(() => {
