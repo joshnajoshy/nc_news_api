@@ -29,9 +29,7 @@ const fetchAllArticles = (sort_by, order, topic) => {
     } else if(topic){
         queryString += " HAVING topic = $1"
         queryValues.push(topic)
-    }
-    
-    else {
+    } else {
         queryString += " ORDER BY created_at DESC;"
     }
     return db.query(queryString, queryValues).then(({rows}) => {

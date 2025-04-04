@@ -26,9 +26,9 @@ const getAllArticles = (request, response, next) => {
     const {order} = request.query;
     const {topic} = request.query;
     const promises = [fetchAllArticles(sort_by, order, topic)]
-    if(sort_by){
+    if(sort_by && sort_by !== 'comment_count'){
         promises.push(checkExists('articles', sort_by))
-    }
+    } 
     if(topic){
         promises.push(checkExists('articles', 'topic', topic))
     }
