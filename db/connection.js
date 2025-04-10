@@ -21,6 +21,9 @@
 
 // module.exports = db;
 
+// const { Pool } = require('pg');
+
+
 const { Pool } = require("pg");
 
 const ENV = process.env.NODE_ENV || 'development';
@@ -35,6 +38,14 @@ if (ENV === 'production') {
 }
 
 const db = new Pool(config);
+
+// const db = new Pool({
+//   user: 'master-username',
+//   host: 'rds-instance-endpoint',
+//   database: 'myDatabase',
+//   password: 'master-password',
+//   port: 'rds-port',
+// });
 
 if (!process.env.PGDATABASE && !process.env.DATABASE_URL) {
   throw new Error("PGDATABASE or DATABASE_URL not set");
