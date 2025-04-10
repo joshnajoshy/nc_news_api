@@ -1,9 +1,9 @@
 const app = require('./app')
 
-app.listen(80, (err) => {
+app.listen(3000, (err) => {
 if(err){
     console.log(err)
 } else{
-    console.log('listening on 80')
+    console.log('listening on 3000')
 }
 })
