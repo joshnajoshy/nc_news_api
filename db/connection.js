@@ -26,6 +26,14 @@
 
 const { Pool } = require("pg");
 
+module.exports = {
+  HOST: process.env.POSTGRESQL_DB_HOST,
+  USER: process.env.POSTGRESQL_DB_USER,
+  PASSWORD: process.env.POSTGRESQL_DB_PASSWORD,
+  DB: process.env.POSTGRESQL_DB,
+  dialect: "postgres",
+};
+
 const ENV = process.env.NODE_ENV || 'development';
 
 require('dotenv').config({ path: `${__dirname}/../.env.${ENV}` });
@@ -38,14 +46,6 @@ if (ENV === 'production') {
 }
 
 const db = new Pool(config);
-
-// const db = new Pool({
-//   user: 'master-username',
-//   host: 'rds-instance-endpoint',
-//   database: 'myDatabase',
-//   password: 'master-password',
-//   port: 'rds-port',
-// });
 
 if (!process.env.PGDATABASE && !process.env.DATABASE_URL) {
   throw new Error("PGDATABASE or DATABASE_URL not set");
